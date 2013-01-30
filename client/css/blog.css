@@ -1,0 +1,23 @@
+/* 
+ * Admin Interface
+ */
+
+.adminTitle {
+    text-align: center;
+}
+
+.buttonsMargin {
+    margin-top: 20px;
+}
+
+#teaser {
+    width: 50%;
+}
+
+/*
+ * Blog Overview Site
+ */
+
+.addNewEntryButton {
+    float: right;
+}

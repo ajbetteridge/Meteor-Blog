@@ -1,0 +1,85 @@
+<head>
+    <title>Meteor Blog</title>
+</head>
+
+<body>
+    <div class="container">
+        {{loginButtons float="right"}}
+        {{renderPage}}
+    </div>
+</body>
+
+<template name="header">
+    <div class="row">
+        <div class="span10">
+            <h1><a href="/">Meteor Blog</a></h1>
+        </div>
+        <div class="span2">
+            <a href="/add">
+                <button class="btn addNewEntryButton"><i class="icon-plus-sign"></i></button>
+            </a>
+        </div>
+    </div>
+</template>
+
+<template name="footer">
+</template>
+
+<template name="home">
+    {{> header}}
+    {{> blogBody}}
+    {{> footer}}
+</template>
+
+<template name="blogBody">
+    {{#each entry}}
+        {{> entry}}
+    {{else}}
+        <div class="row">
+            <div class="span12">
+                <p>There are no posts added yet.</p>
+            </div>
+        </div>
+    {{/each}}
+    {{#if moreEntries}}
+        {{#if isAutoload}}
+        <div id="autoloader">
+            <p><i class="icon-spinner icon-spin"></i> Loading new posts...</p>
+        </div>
+        {{else}}
+            <button id="loadMore" class="btn">Load more Entries</button>
+        {{/if}}
+    {{/if}}
+</template>
+
+<template name="entry">
+    <div class="blogEntry">
+        <div class="row">
+            <div class="span12">
+                <h2 id="{{slug}}" name="{{slug}}"><a class="postTitle" href="/post/{{slug}}">{{title}}</a></h2>
+                {{#if hasTeaser}}
+                    {{#if clickedOn}}
+                        <div class="blogBody">{{{body}}}</div>
+                    {{else}}
+                        <p>{{teaser}}</p>
+                    {{/if}}
+                {{else}}
+                    <div class="blogBody">
+                        {{#if clickedOn}}
+                            {{{body}}}
+                        {{else}}
+                            {{{shortenedBody}}}
+                        {{/if}}
+                    </div>
+                {{/if}}
+                <h3><small>by {{ownerName}} @ {{createdNode}}</small></h3>
+                {{#if clickedOn}}
+                    {{#if isOwner}}
+                        <button class="btn editBody">Edit body</button>
+                        <a href="/"><button class="btn removeEntry">Remove it</button></a>
+                    {{/if}}
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</template>

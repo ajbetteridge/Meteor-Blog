@@ -1,0 +1,32 @@
+<template name="admin">
+    <div class="span12 adminTitle">
+        <h1>Admin</h1>
+    </div>
+    <div class="span12">
+        {{#if currentUser}}
+            <p>Welcome {{currentUser.username}}, write some stuff.</p>
+            <form id="adminForm">
+                <label for="title">
+                    <h2>Title *</h2>
+                </label>
+                <input type="text" id="title" placeholder="Title"/>
+                <label for="slug">
+                    <h2>Slug *</h2>
+                </label>
+                <input type="text" id="slug" placeholder="A slug (e.g post-1)"/>
+                <label for="teaser">
+                    <h2>Teaser <small>(If not added, first paragraph of body taken)</small></h2>
+                </label>
+                <textarea type="text" id="teaser" placeholder="Teaser"></textarea>
+                <h2>Body* <small>(click into the field to edit)</small></h2>
+                <div class="editable" id="blogBody"><p>First paragraph for overview, Click me to edit.</p></div>
+                <button class="btn buttonsMargin" type="submit">Post it</button>
+                <a href="/"><button class="btn buttonsMargin">Get back</button></a>
+            </form>
+        {{else}}
+            <div class="row">
+                <p>Please sign in to add new entries.</p>
+            </div>
+        {{/if}}
+    </div>
+</template>
