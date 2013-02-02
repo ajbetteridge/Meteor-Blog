@@ -10,9 +10,9 @@
 </body>
 
 <template name="header">
-    <div class="row">
+    <div class="row headerRow">
         <div class="span10">
-            <h1><a href="/">Meteor Blog</a></h1>
+            <h1 class="title"><a href="/">Meteor Blog</a></h1>
         </div>
         <div class="span2">
             <a href="/add">
@@ -35,11 +35,19 @@
     {{#each entry}}
         {{> entry}}
     {{else}}
-        <div class="row">
-            <div class="span12">
-                <p>There are no posts added yet.</p>
+        {{#if thereAreNoEntries}}
+            <div class="row">
+                <div class="span12">
+                    <p>There are no entries available.</p>
+                </div>
             </div>
-        </div>
+        {{else}}
+            <div class="row">
+                <div class="span12">
+                    <p><i class="icon-spinner icon-spin"></i> The posts are loading...</p>
+                </div>
+            </div>
+        {{/if}}
     {{/each}}
     {{#if moreEntries}}
         {{#if isAutoload}}
@@ -56,7 +64,8 @@
     <div class="blogEntry">
         <div class="row">
             <div class="span12">
-                <h2 id="{{slug}}" name="{{slug}}"><a class="postTitle" href="/post/{{slug}}">{{title}}</a></h2>
+                <h2 id="{{slug}}" class="postTitle" name="{{slug}}"><a href="/post/{{slug}}">{{title}}</a></h2>
+                <hr />
                 {{#if hasTeaser}}
                     {{#if clickedOn}}
                         <div class="blogBody">{{{body}}}</div>

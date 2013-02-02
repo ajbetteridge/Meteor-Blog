@@ -13,6 +13,12 @@ Meteor.startup(function () {
     // Default variables
     Session.set('currentlyLoaded', Session.get('loadOnStartup'));
     Session.set('pageStartup', false);
+    Session.set('thereAreNoEntries', false);
+    
+    // Checking if there are any entries loaded after 5 seconds change to 'no entries'
+    Meteor.setTimeout(function () {
+        Session.set('thereAreNoEntries', 0 === Entries.find().fetch().length);
+    }, 5000);
 });
 
 Accounts.ui.config({
@@ -50,8 +56,6 @@ function defineEntriesOnStartup() {
 
     // Only change the Session variable if its bigger of course
     if (Session.get('currentlyLoaded') < definedNumber) {
-        console.log("re-writing the session variable");
-        console.log(Session.get('currentlyLoaded'));
         Session.set('currentlyLoaded', definedNumber);
 
     }
@@ -97,6 +101,10 @@ Template.home.rendered = function () {
 
 Template.blogBody.entry = function () {
     return Entries.find({}, { sort: { created: -1 }, limit: Session.get('currentlyLoaded') });
+};
+
+Template.blogBody.thereAreNoEntries = function () {
+    return Session.get('thereAreNoEntries');
 };
 
 Template.blogBody.hasLoadMoreButton = function () {
@@ -145,15 +153,16 @@ Template.entry.events({
             bodyContent = blogBody.children('p').first().html(),
             bodyContent = $(blogBody).html();
 
-        if (this.body === bodyContent || 'Edit body' === $(e.toElement).html()) {
+        if (this.body === bodyContent) {
             $(blogBody).aloha();
             $(e.toElement).html('Save body');
         } else {
+            $(blogBody).mahalo();
             Entries.update({  _id: this._id }, { $set: { body: bodyContent } });
             $(e.toElement).html('Edit body');
         }
     },
-    'click h2 a.postTitle' : function (e) {
+    'click h2.postTitle' : function (e) {
         // Add animation if it's focused on a page
         Session.set('currentPostSlug', this.slug);
         // Works just with timeout

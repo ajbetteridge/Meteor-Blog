@@ -1,4 +1,4 @@
-/* 
+/*
  * Admin Interface
  */
 
@@ -17,6 +17,23 @@
 /*
  * Blog Overview Site
  */
+
+h1.title {
+    font-size: 50px;
+    margin: 40px 0px;
+}
+h1.title a {
+    text-decoration: none;
+    color: black;
+}
+h2.postTitle a, p a {
+    text-decoration: none;
+    color: #04527D;
+}
+h2.postTitle a:hover, p a:hover  {
+    text-decoration: none;
+    color: #013F60;
+}
 
 .addNewEntryButton {
     float: right;
