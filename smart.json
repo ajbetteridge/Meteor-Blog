@@ -2,6 +2,9 @@
   "packages": {
     "bafa": {},
     "router": {},
-    "aloha-editor": {}
+    "select2": {},
+    "keybindings": {},
+    "jquery-ui": {},
+    "filepicker": {}
   }
 }

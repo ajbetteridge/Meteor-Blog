@@ -1,9 +1,25 @@
+/*jslint node: true */
+/*jslint nomen: true*/
+/*global $, _, jQuery, Template, Meteor, Session, window, console, Entries, Accounts */
+'use strict';
+
 // Publish statements
 Meteor.publish('entries', function () {
     return Entries.find();
 });
 
 Meteor.startup(function () {
+    // Create admin if it isn't created already
+    var adminIsAlreadyCreated = 0 < Meteor.users.find({ username: 'admin' }).fetch().length;
+
+    if (!adminIsAlreadyCreated) {
+        Accounts.createUser({
+            username    : 'admin',
+            password    : 'admin',
+            profile     : { type : 'admin' }
+        });
+    }
+
     /*
      * Fill in Testdata if you want to
      */

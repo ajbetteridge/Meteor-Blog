@@ -11,7 +11,11 @@
 }
 
 #teaser {
-    width: 50%;
+    width: 90%;
+}
+
+.select2-input {
+    min-width: 50px;
 }
 
 /*
@@ -37,4 +41,15 @@ h2.postTitle a:hover, p a:hover  {
 
 .addNewEntryButton {
     float: right;
+}
+
+.tagLabel {
+    font-size: 12px;
+}
+
+/* Hide tags when on phone */
+@media (max-width: 480px) { 
+    #tagContainer {
+        display: none;
+    }
 }

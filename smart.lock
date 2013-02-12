@@ -8,7 +8,10 @@
     "basePackages": {
       "bafa": {},
       "router": {},
-      "aloha-editor": {}
+      "select2": {},
+      "keybindings": {},
+      "jquery-ui": {},
+      "filepicker": {}
     },
     "packages": {
       "bafa": {
@@ -18,13 +21,28 @@
       },
       "router": {
         "git": "https://github.com/tmeasday/meteor-router.git",
-        "tag": "v0.3.4",
-        "commit": "8f0d5303de5b93771e91f21f818be27358c2fb30"
+        "tag": "v0.3.5",
+        "commit": "e8e63db2411204f0a6589b74dd591babbfb2da1a"
       },
-      "aloha-editor": {
-        "git": "https://github.com/evo42/meteor-aloha-editor.git",
-        "tag": "v0.1.2",
-        "commit": "0f903efa86abc6aabb112f772468ef5e7aaa3577"
+      "select2": {
+        "git": "https://github.com/rithis/meteor-select2",
+        "tag": "v3.2.0r1",
+        "commit": "9e42e96facea43712374832e88aac6b21926ac90"
+      },
+      "keybindings": {
+        "git": "https://github.com/matteodem/meteor-keybindings.git",
+        "tag": "v0.3.8",
+        "commit": "7102c7329453c18c63846d74d0b51ef35a23e945"
+      },
+      "jquery-ui": {
+        "git": "https://github.com/TimHeckel/meteor-jquery-ui.git",
+        "tag": "v1.8.16",
+        "commit": "abda12134b8f3c5db31d6a4864bead6aa3640358"
+      },
+      "filepicker": {
+        "git": "https://github.com/Filepicker/meteor.git",
+        "tag": "v0.2.0",
+        "commit": "1ae688ad1abfbe6777c465e11a0d5287ad9e4d4a"
       },
       "page-js": {
         "git": "https://github.com/tmeasday/meteor-page-js.git",

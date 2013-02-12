@@ -1,35 +1,72 @@
 <template name="admin">
+    {{> header}}
     <div class="row">
         <div class="span10">
-            <h1>Admin</h1>
+            <h2>Admin</h2>
         </div>
         <div class="span2">
-            <a href="/">
-                <button class="btn">Go Back</button>
-            </a>
+            {{loginButtons float="right"}}
         </div>
     </div>
     <div class="row">
         {{#if currentUser}}
             <div class="span12">
                 <p>Welcome {{currentUser.username}}, write some stuff.</p>
+                <hr />
+            </div>
+            <div class="span6">
                 <form id="adminForm">
-                    <label for="title">
-                        <h2>Title *</h2>
-                    </label>
-                    <input type="text" id="title" placeholder="Title"/>
-                    <label for="slug">
-                        <h2>Slug *</h2>
-                    </label>
-                    <input type="text" id="slug" placeholder="A slug (e.g post-1)"/>
-                    <label for="teaser">
-                        <h2>Teaser <small>(If not added, first paragraph of body taken)</small></h2>
-                    </label>
-                    <textarea type="text" id="teaser" placeholder="Teaser"></textarea>
-                    <h2>Body* <small>(click into the field to edit)</small></h2>
-                    <div class="editable" id="blogBody"><p>First paragraph for overview, Click me to edit.</p></div>
-                    <button class="btn buttonsMargin" type="submit">Post it</button>
+                    <div class="row-fluid">
+                        <div id="titleBlock" class="span6">
+                            <label for="title">
+                                <h3>Title *</h3>
+                            </label>
+                            <input type="text" id="title" placeholder="Title"/>
+                        </div>
+                        <div id="slugBlock" class="span6">
+                            <label for="slug">
+                                <h3>Slug *</h3>
+                            </label>
+                            <input type="text" id="slug" placeholder="A slug (e.g post-1)"/>
+                        </div>
+                    </div>
+                    <div id="teaserBlock">
+                        <label for="teaser">
+                            <h3>Teaser <small>(If none, first paragraph of body taken)</small></h3>
+                        </label>
+                        <textarea type="text" id="teaser" placeholder="Teaser"></textarea>
+                    </div>
+                    <div id="tagsBlock">
+                        <label for="tags">
+                            <h3>Tags</h3>
+                        </label>
+                        <input id="tags" class="input-xlarge" type="select" value="music,edm">
+                    </div>
+                    <div id="imageBlock">
+                        <h3>Image</h3>
+                        <button id="uploadImage" class="btn">Upload</button>
+                        {{#if uploadedPictures}}
+                            <div class="buttonsMargin alert alert-success">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                The picture has been uploaded succesfully
+                            </div>
+                        {{/if}}
+                        {{#if couldntUploadPictures}}
+                            <div class="buttonsMargin alert alert-error">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                The upload had an error
+                            </div>
+                        {{/if}}
+                        
+                    </div>
+                    <div id="bodyBlock">
+                        <h3>Body* <small>(click into the field to edit)</small></h3>
+                        <div class="editable" id="blogBody"><p>First paragraph for overview, Click me to edit.</p></div>
+                    </div>
+                    <button class="btn btn-primary buttonsMargin" type="submit">Post it</button>
                 </form>
+                <hr />
+                <p>* is required</p>
             </div>
         {{else}}
             <div class="span12">

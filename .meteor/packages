@@ -6,7 +6,11 @@
 preserve-inputs
 bafa
 router
-aloha-editor
 jquery-waypoints
 accounts-password
 accounts-ui
+select2
+keybindings
+underscore
+jquery-ui
+filepicker
