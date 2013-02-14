@@ -40,7 +40,15 @@
             </div>
             <div id="searchContainer">
                 <h3>Search</h3>
-                <input id="blogSearch"type="text" class="input-medium search-query">
+                <input id="blogSearch" type="text" class="input-wide search-query">
+            </div>
+            <div id="archiveContainer">
+                <h3>Archive</h3>
+                <ul class="unstyled">
+                    {{#each archiveMonth}}
+                    <li class="fadeIn {{animateClass}}"><a href="/archive/{{this}}">{{nodeArchive}}</a></li>
+                    {{/each}}
+                </ul>
             </div>
         </div>
         <div class="span9">
@@ -48,52 +56,64 @@
                 {{> entry}}
             {{else}}
                 {{#if thereAreNoEntries}}
-                    <p>There are no entries available.</p>
+                    <p id="noEntriesAvaiable" class="hide">There are no entries available.</p>
                 {{else}}
                     <p><i class="icon-spinner icon-spin"></i> The posts are loading...</p>
                 {{/if}}
             {{/each}}
         </div>
     </div>
+    {{#if moreEntries}}
     <div class="row">
-        <div class="span12">
-            {{#if moreEntries}}
-                {{#if isAutoload}}
-                <div id="autoloader">
-                    <p><i class="icon-spinner icon-spin"></i> Loading new posts...</p>
-                </div>
-                {{else}}
-                    <button id="loadMore" class="btn">Load more Entries</button>
-                {{/if}}
+        <div class="span3">
+        </div>
+        <div class="span9">
+            {{#if isAutoload}}
+            <div id="autoloader">
+                <p><i class="icon-spinner icon-spin"></i> Loading new posts...</p>
+            </div>
+            {{else}}
+                <button id="loadMore" class="btn">Load more Entries</button>
             {{/if}}
         </div>
     </div>
+    {{/if}}
 </template>
 
 <template name="entry">
-    <div class="blogEntry">
-        <h2 id="{{slug}}" class="postTitle" name="{{slug}}"><a href="/post/{{slug}}">{{title}}</a></h2>
+    <div class="blogEntry fadeInRight {{animateClass}}">
         <hr />
         {{#if clickedOn}}
+            <h2 id="{{slug}}" class="postTitle" name="{{slug}}">
+                <a href="/post/{{slug}}">{{title}}</a>
+                <small>{{createdNode}}</small>
+            </h2>
+            {{#if hasPicture}}
+                <img src="{{picture.url}}" class="blogImage" />
+            {{/if}}
             <div class="blogBody">
-                {{#if hasPicture}}
-                    <img src="{{picture.url}}" class="blogImage" />
-                {{/if}}
                 {{{body}}}
             </div>
+            <div class="tags">
+                <h4>Tags</h4>
+                <ul class="inline">
+                    {{#each tag}}
+                        <li><a href="/tags/{{tagSlug}}"><span class="entryTag tagLabel label badge-info">{{this}}</span></a></li>
+                    {{/each}}
+                </ul>
+            </div>
+            {{#if isOwner}}
+                <button class="btn editBody">Edit</button>
+                <a href="/"><button class="btn removeEntry">Remove</button></a>
+            {{/if}}
         {{else}}
+            <h2 id="{{slug}}" class="postTitle" name="{{slug}}"><a href="/post/{{slug}}">{{title}}</a></h2>
             {{#if hasTeaser}}
                 <p>{{teaser}}</p>
             {{else}}
                 {{{shortenedBody}}}
             {{/if}}
-        {{/if}}
-        <h3><small>by {{ownerName}}, {{momentAgo}}</small></h3>
-        {{#if clickedOn}}
-            {{#if isOwner}}
-                <button class="btn editBody">Edit</button>
-                <a href="/"><button class="btn removeEntry">Remove</button></a>
-            {{/if}}
+            <h3><small>by {{ownerName}}, {{momentAgo}}</small></h3>
         {{/if}}
     </div>
 </template>

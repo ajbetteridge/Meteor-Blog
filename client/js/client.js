@@ -16,16 +16,17 @@
         Session.set('autoload', true); // Autoload or click to load more entries
         Session.set('numberLoad', 4); // How many to load when clicked / autoloaded
         Session.set('animationToPost', 1000); // AnimationLength (in ms) for scrolling to the post
+        Session.set('animateElements', true); // Set animating entries to true
 
-        // Default variables
+        // Default variables *DO NOT CHANGE*
         Session.set('currentlyLoaded', Session.get('loadOnStartup'));
         Session.set('pageStartup', false);
         Session.set('thereAreNoEntries', false);
 
-        // Checking if there are any entries loaded after 5 seconds change to 'no entries'
+        // Show that there are now entries available after one second
         Meteor.setTimeout(function () {
-            Session.set('thereAreNoEntries', 0 === Entries.find().fetch().length);
-        }, 500);
+            $('#noEntriesAvaiable').removeClass('hide');
+        }, 1000);
 
         // Adding awesome keybindings
         Meteor.Keybindings.add({
@@ -39,28 +40,6 @@
     });
 
     Meteor.subscribe('entries');
-
-    Meteor.Router.add({
-        '/add' : function () {
-            Session.set('pictureObject', {});
-            Session.set('uploadedPictures', false);
-            Session.set('couldntUploadedPictures', false);
-            return 'admin';
-        },
-        '/post/:slug' : function (slug) {
-            Session.set('currentPostSlug', slug);
-            return 'home';
-        },
-        '/' : function () {
-            Session.set('tagFiltering', '');
-            Session.set('currentPostSlug', '');
-            return 'home';
-        },
-        '/tags/:tag' : function (tag) {
-            Session.set('tagFiltering', tag.replace(/[\_]/g, ' '));
-            return 'home';
-        }
-    });
 
     /**
      * Helper Functions
@@ -85,6 +64,68 @@
 
         }
     }
+
+    function generateArchive(entries) {
+        var first = entries.pop(),
+            last = entries.shift(),
+            archiveArray = [],
+            yearDifference = moment(last.created).format('YYYY') - moment(first.created).format('YYYY');
+
+        if (0 > yearDifference) {
+            // When the first and last entry are in the same month
+            archiveArray.push(moment(first.created).format('MMM-DD-YYYY'));
+        } else {
+            entries.unshift(last);
+            entries.push(first);
+            _.each(entries, function (value) {
+                var date = moment(value.created);
+                archiveArray.push(date.format('MMM-DD-YYYY'));
+            });
+
+            // Duplicate free array
+            archiveArray = _.uniq(archiveArray, true);
+        }
+
+        return archiveArray;
+    }
+
+    function resetSessionValues() {
+        Session.set('archive', false);
+        Session.set('tagFiltering', '');
+        Session.set('currentPostSlug', '');
+        Session.set('animateElements', false);
+    }
+
+    Meteor.Router.add({
+        '/add' : function () {
+            Session.set('pictureObject', {});
+            Session.set('uploadedPictures', false);
+            Session.set('couldntUploadedPictures', false);
+            Session.set('succesfullyCreated', false);
+            return 'admin';
+        },
+        '/post/:slug' : function (slug) {
+            Session.set('animateElements', false);
+            Session.set('currentPostSlug', slug);
+            return 'home';
+        },
+        '/' : function () {
+            resetSessionValues();
+            $('#blogSearch').val('');
+            Session.set('searchValue', '');
+            return 'home';
+        },
+        '/tags/:tag' : function (tag) {
+            resetSessionValues();
+            Session.set('tagFiltering', tag.replace(/[\_]/g, ' '));
+            return 'home';
+        },
+        '/archive/:date' : function (date) {
+            resetSessionValues();
+            Session.set('archive', date.split('-').join(' '));
+            return 'home';
+        }
+    });
 
     /**
      * Home Template (together with footer, blogBody and header)
@@ -116,6 +157,7 @@
             if (Session.get('autoload')) {
                 $('#autoloader').waypoint(function (e, direction) {
                     if ('down' === direction) {
+                        Session.set('animateElements', false);
                         Session.set('currentlyLoaded', Session.get('currentlyLoaded') + Session.get('numberLoad'));
                     }
                     e.preventDefault();
@@ -134,17 +176,25 @@
         entry: function () {
             var entries,
                 selector = {},
+                archive = Session.get('archive') ? new RegExp(Session.get('archive'), 'i') : false,
                 tag = Session.get('tagFiltering'),
-                search = new RegExp(Session.get('searchValue'), 'i');
-            if (tag) {
+                search = Session.get('searchValue') ? new RegExp(Session.get('searchValue'), 'i') : false;
+
+            // If searching for specific month
+            if (archive) {
+                selector = { createdNode: archive };
+            } else if (tag) {
+                // If searching for a tag
                 selector = { tags: tag };
             }
 
+            // If user is searching
             if (search) {
                 selector = _.extend(selector, { $or: [
                     { title: search },
                     { body: search },
                     { teaser: search },
+                    { createdNode: search },
                     { ownerName: search }
                 ] });
             }
@@ -187,11 +237,27 @@
             if (currentlyLoaded < allEntries) {
                 return true;
             }
+        },
+        archiveMonth: function () {
+            var returnArray = [],
+                allEntries = Entries.find({}, { sort: { created: -1 } }).fetch();
+
+            if (2 < allEntries.length) {
+                returnArray = generateArchive(allEntries);
+            }
+            return returnArray;
+        },
+        animateClass: function () {
+            return Session.get('animateElements') ? 'animateOneSec' : '';
+        },
+        nodeArchive: function () {
+            return moment(this).format('MMMM YYYY');
         }
     });
 
     Template.blogBody.events({
         'click #loadMore' : function (e) {
+            Session.set('animateElements', false);
             Session.set('currentlyLoaded', Session.get('currentlyLoaded') + Session.get('numberLoad'));
             e.preventDefault();
         },
@@ -216,6 +282,15 @@
         },
         momentAgo: function () {
             return moment(this.created).fromNow();
+        },
+        animateClass: function () {
+            return Session.get('animateElements') ? 'animateOneSec' : '';
+        },
+        tag: function () {
+            return this.tags;
+        },
+        tagSlug: function () {
+            return this.replace(/[\s]/g, '_');
         }
     });
 
@@ -224,6 +299,11 @@
     };
 
     Template.entry.events({
+        'click .entryTag' : function () {
+            $('html, body').animate({
+                scrollTop: 0
+            });
+        },
         'click .editBody' : function (e) {
             var blogBody = $(e.toElement).parent().children('.blogBody'),
                 bodyContent = $(blogBody).html();
@@ -234,6 +314,7 @@
                         'halloformat': {},
                         'halloheadings': {},
                         'halloblock': {},
+                        'hallolink' : {},
                         'halloimage': {},
                         'hallojustify': {},
                         'hallolists': {}
@@ -291,20 +372,30 @@
         },
         couldntUploadPictures: function () {
             return Session.get('couldntUploadPictures');
+        },
+        succesfullyCreated: function () {
+            return Session.get('succesfullyCreated');
+        },
+        currentUserIsAdmin: function () {
+            var user = Meteor.user();
+            if (user) {
+                if ('object' === typeof user.profile) {
+                    return 'admin' === user.profile.type;
+                }
+            }
         }
     });
 
     Template.admin.events({
         'submit #adminForm' : function (e) {
             var title = $('#title').val(),
-                slug = $('#slug').val(),
+                slug = $('#slug').val().replace(/[\s]+/g, ''),
                 teaser = $('#teaser').val() || '',
                 body = $('#blogBody').html(),
                 overviewBody = $('#blogBody').children().first().html(),
                 tags = $("#tags").select2("val"),
-                picture = Session.get('pictureObject'),
-                created = new Date(),
-                createdNode = created.toDateString().substr(4) + ' ' + created.toTimeString().substr(0, 5);
+                picture = Session.get('pictureObject');
+
             if (0 !== title.length && 0 !== slug.length && 0 !== body.length && 0 !== tags.length) {
                 Meteor.call('isAdmin');
                 Meteor.call('createNewEntry', {
@@ -314,15 +405,14 @@
                     body: body,
                     overviewBody: overviewBody,
                     tags: tags,
-                    pictureObject: picture,
-                    created: created,
-                    createdNode: createdNode
+                    pictureObject: picture
                 });
 
                 $('#title').val('');
                 $('#slug').val('');
                 $('#teaser').val('');
                 Session.set('pictureObject', {});
+                Session.set('succesfullyCreated', true);
                 $('#blogBody').html('<p>First paragraph for overview, Click me to edit.</p>');
             }
 
@@ -332,9 +422,10 @@
             $('.editable').hallo({
                 plugins: {
                     'halloformat': {},
-                    'halloheadings': {},
+                    'halloheadings': { headers: [1, 2,3,4] },
                     'halloblock': {},
                     'halloimage': {},
+                    'hallolink' : {},
                     'hallojustify': {},
                     'hallolists': {}
                 }

@@ -1,4 +1,21 @@
 /*
+ * General Styles
+ */
+
+.animateOneSec {
+    -webkit-animation-duration: 1s;
+    -moz-animation-duration: 1s;
+    -ms-animation-duration: 1s;
+    -o-animation-duration: 1s;
+    animation-duration: 1s;
+}
+
+.input-wide {
+    width: 100%;
+    max-width: 200px;
+}
+
+/*
  * Admin Interface
  */
 
@@ -48,8 +65,13 @@ h2.postTitle a:hover, p a:hover  {
 }
 
 /* Hide tags when on phone */
-@media (max-width: 480px) { 
-    #tagContainer {
+@media (max-width: 767px) { 
+    #tagContainer, #archiveContainer {
         display: none;
+    }
+    
+    #searchContainer, h1.title {
+        text-align: center;
+        margin-bottom: 10px;
     }
 }

@@ -9,7 +9,7 @@
         </div>
     </div>
     <div class="row">
-        {{#if currentUser}}
+        {{#if currentUserIsAdmin}}
             <div class="span12">
                 <p>Welcome {{currentUser.username}}, write some stuff.</p>
                 <hr />
@@ -60,17 +60,23 @@
                         
                     </div>
                     <div id="bodyBlock">
-                        <h3>Body* <small>(click into the field to edit)</small></h3>
+                        <h3>Body* <small>(click <i class="icon-double-angle-down"></i> to edit)</small></h3>
                         <div class="editable" id="blogBody"><p>First paragraph for overview, Click me to edit.</p></div>
                     </div>
                     <button class="btn btn-primary buttonsMargin" type="submit">Post it</button>
                 </form>
+                {{#if succesfullyCreated}}
+                    <div class="buttonsMargin alert alert-success">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        The post has been created succesfully!
+                    </div>
+                {{/if}}
                 <hr />
                 <p>* is required</p>
             </div>
         {{else}}
             <div class="span12">
-                <p>Please sign in to add new entries.</p>
+                <p>Please sign in as an <b>admin</b> to add new entries.</p>
             </div>
         {{/if}}
     </div>

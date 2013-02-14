@@ -24,7 +24,7 @@ Entries.allow({
 
 function checkAdmin() {
     var user = Meteor.user();
-    if (!("string" === typeof (user.username) && "admin" === user.username)) {
+    if (!("string" === typeof (user.username) && "string" === typeof (user.profile.type) && "admin" === user.profile.type)) {
         throw new Meteor.Error(400, "Not logged in as admin");
     }
     return true;
@@ -32,15 +32,14 @@ function checkAdmin() {
 
 Meteor.methods({
     'createNewEntry' : function (options) {
-        var picture = 'object' === typeof options.pictureObject ? options.pictureObject : '';
+        var date = new Date(),
+            picture = 'object' === typeof options.pictureObject ? options.pictureObject : '';
 
         if ('string' === typeof options.title && 0 !== options.title.length
                 && 'string' === typeof options.slug && 0 !== options.slug.length
                 && 'string' === typeof options.teaser
                 && 'string' === typeof options.body && 0 !== options.body.length
                 && 'object' === typeof options.tags && 0 !== options.tags.length
-                && ('string' === typeof options.created || ('object' === typeof options.created && 0 !== options.created.length))
-                && 'string' === typeof options.createdNode && 0 !== options.createdNode.length
                 && checkAdmin()) {
 
             return Entries.insert({
@@ -53,8 +52,8 @@ Meteor.methods({
                 picture: picture,
                 ownerName: Meteor.user().username,
                 ownerId: Meteor.userId(),
-                created: options.created,
-                createdNode: options.createdNode
+                created: date,
+                createdNode: date.toDateString().substr(4) + ' ' + date.toTimeString().substr(0, 5)
             });
         }
     },

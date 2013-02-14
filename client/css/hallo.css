@@ -1,17 +1,23 @@
 div.hallotoolbar {
     border: 1px solid #babdb6;
-    padding: 2px;
     background-color: #eeeeec;
     border-radius: 6px;
-    font-size: 12pt;
     line-height: 1.1em;
     z-index: 500;
+    font-size: 14px;
+}
+
+div.hallotoolbar .ui-button {
+    margin: 3px 1px;
+}
+
+div.hallotoolbar .ui-button-text {
+    padding: 4px 12px;
 }
 
 div.halloEditIndicator {
     background-color: #000000;
     color: #ffffff;
-    padding: 4px;
     border-radius: 4px;
 }
 
